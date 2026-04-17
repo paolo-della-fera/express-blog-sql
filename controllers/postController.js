@@ -17,14 +17,20 @@ const index = (req, res) => {
 
 // show
 const show = (req, res) => {
-    const post = posts.find(post => post.id === parseInt(req.params.id));
+    const id = parseInt(req.params.id);
 
-    if (!post) {
-        return res.status(404).json({ error: 'Post non trovato' });
-    }
+    connection.query('SELECT * FROM posts WHERE id = ?', [id], (err, results) => {
+        if (err) {
+            return res.status(500).json({ error: 'Errore del server' });
+        }
 
-    res.json({ post });
-};
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Post non trovato' });
+        }
+
+        res.json({ post: results[0] });
+    });
+}; 
 
 
 // store
