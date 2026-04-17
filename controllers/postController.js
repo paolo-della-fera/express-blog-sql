@@ -1,15 +1,17 @@
+const connection = require('../data/db');
+
 let posts = require('../data/posts');
 
 
 // index
 const index = (req, res) => {
-    let result = posts;
-
-    if (req.query.tag) {
-        result = posts.filter(post => post.tags.includes(req.query.tag));
+  connection.query('SELECT * FROM posts', (err, results) => {
+    if (err) {
+      res.status(500).json({ error: 'Errore del server' });
+      return;
     }
-
-    res.json({ posts: result });
+    res.json({ posts: results });
+  });
 };
 
 
