@@ -12,6 +12,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 
+// Import connection to the database
+const connection = require('./data/db');
+
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Server del mio blog in ascolto sulla porta http://127.0.0.1:${PORT}`);
