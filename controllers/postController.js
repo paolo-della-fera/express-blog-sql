@@ -5,13 +5,13 @@ let posts = require('../data/posts');
 
 // index
 const index = (req, res) => {
-  connection.query('SELECT * FROM posts', (err, results) => {
-    if (err) {
-      res.status(500).json({ error: 'Errore del server' });
-      return;
-    }
-    res.json({ posts: results });
-  });
+    connection.query('SELECT * FROM posts', (err, results) => {
+        if (err) {
+            res.status(500).json({ error: 'Errore del server' });
+            return;
+        }
+        res.json({ posts: results });
+    });
 };
 
 
@@ -68,15 +68,19 @@ const modify = (req, res) => {
 
 // destroy
 const destroy = (req, res) => {
-    const post = posts.find(post => post.id === parseInt(req.params.id));
+    const id = parseInt(req.params.id);
 
-    if (!post) {
-        return res.status(404).json({ error: 'Post non trovato' });
-    }
+    connection.query('DELETE FROM posts WHERE id = ?', [id], (err, result) => {
+        if (err) {
+            return res.status(500).json({ error: 'Errore del server' });
+        }
 
-    posts = posts.filter(post => post.id !== parseInt(req.params.id));
-    console.log(posts);
-    res.status(204).send();
+        if (result.affectedRows === 0) {
+            return res.status(404).json({ error: 'Post non trovato' });
+        }
+
+        res.status(204).send();
+    });
 };
 
 
